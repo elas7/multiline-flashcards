@@ -12,7 +12,7 @@ import registerServiceWorker from "./registerServiceWorker";
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <Router>
+      <Router basename="/multiline-flashcards">
         <App />
       </Router>
     </PersistGate>
