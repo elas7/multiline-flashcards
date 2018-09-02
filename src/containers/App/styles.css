@@ -1,0 +1,38 @@
+.App {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  /*background: linear-gradient(to left, #B24592 , #F15F79);*/
+  background: url("../../static/bg.jpeg");
+  background-size: cover;
+  background-position: center center;
+}
+
+.wrapper {
+  width: 400px;
+  height: 620px;
+  border-radius: 0.5rem !important;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+@media (max-width: 600px) {
+  .App {
+    height: initial;
+    width: initial;
+  }
+
+  .wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: initial;
+    height: initial;
+    border-radius: 0 !important;
+  }
+}

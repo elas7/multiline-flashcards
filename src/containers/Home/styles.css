@@ -1,0 +1,39 @@
+.appBarTitle {
+  flex: 1;
+  text-align: center;
+}
+
+.menuIcon {
+  position: absolute !important;
+  right: 0;
+}
+
+.content {
+  padding: 1.5rem;
+}
+
+.addButton {
+  position: absolute !important;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.textsContainer {
+  overflow-y: auto;
+}
+
+.modalButtonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.modalButtonsContainer > button:last-child {
+  margin-left: 1rem;
+}
+
+.setButton {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}

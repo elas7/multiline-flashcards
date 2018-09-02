@@ -1,0 +1,46 @@
+.appBarTitle {
+  flex: 1;
+  text-align: center;
+}
+
+.menuIcon {
+  position: absolute !important;
+  right: 0;
+}
+
+.menuIconLeft {
+  position: absolute !important;
+  left: 0;
+}
+
+.content {
+  padding: 1rem;
+}
+
+.addButton {
+  position: absolute !important;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.textsContainer {
+  overflow-y: auto;
+}
+
+.setInfo {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: baseline;
+}
+
+.editTitleButton {
+  margin-left: 0.5rem !important;
+  position: relative !important;
+  top: 0.2rem;
+}

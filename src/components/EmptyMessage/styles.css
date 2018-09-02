@@ -1,0 +1,18 @@
+.emptyMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 4rem;
+  margin-top: 5rem;
+}
+
+.emptyMessageAvatar {
+  width: 80px !important;
+  height: 80px !important;
+  margin-bottom: 1rem;
+}
+
+.emptyMessageIcon {
+  width: 50px !important;
+  height: 50px !important;
+}

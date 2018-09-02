@@ -1,0 +1,9 @@
+.modalButtonsContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.modalButtonsContainer > button:last-child {
+  margin-left: 1rem;
+}

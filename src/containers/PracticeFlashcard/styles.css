@@ -1,0 +1,35 @@
+.practiceContent {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.practiceForm {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.practiceTextCorrection {
+  white-space: pre-wrap;
+  margin-top: 1rem !important;
+}
+
+.errorText {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.practiceNotification {
+  bottom: 5rem !important;
+  position: absolute !important;
+}
+
+.practiceNotificationCorrect {
+  background: #43a047 !important;
+}
+
+.practiceNotificationIncorrect {
+  background: #d32f2f !important;
+}

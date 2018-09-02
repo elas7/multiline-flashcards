@@ -1,0 +1,13 @@
+.appBar {
+  border-radius: 0.5rem 0.5rem 0 0 !important;
+}
+
+.smallToolbar {
+  padding: 0 !important;
+}
+
+@media (max-width: 600px) {
+  .appBar {
+    border-radius: 0 !important;
+  }
+}

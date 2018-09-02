@@ -1,0 +1,12 @@
+.newFlashcardContent {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.newFlashcardContent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
