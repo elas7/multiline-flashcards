@@ -4,13 +4,12 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowBack from "@material-ui/icons/ArrowBack";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 
 import { Flashcard, WordInString } from "../../types";
 import Header from "../../components/Header";
+import BackButton from "../../components/BackButton";
 import { areStringsEqual, findFirstDifferentWord } from "../../utils";
 import "./styles.css";
 
@@ -91,9 +90,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <Header color="default">
-          <IconButton component={Link} to={`/sets/${setId}`} color="inherit">
-            <ArrowBack />
-          </IconButton>
+          <BackButton />
           <Typography variant="subheading" color="inherit">
             Practice
           </Typography>

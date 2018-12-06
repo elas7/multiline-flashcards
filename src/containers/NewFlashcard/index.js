@@ -1,13 +1,12 @@
 // @flow
 import * as React from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
-import IconButton from "@material-ui/core/IconButton";
-import ArrowBack from "@material-ui/icons/ArrowBack";
 import Button from "@material-ui/core/Button";
 
+import BackButton from "../../components/BackButton";
 import { createFlashcard } from "../../modules/flashcards";
 import Header from "../../components/Header";
 import "./styles.css";
@@ -77,9 +76,7 @@ class NewFlashcard extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <Header color="default">
-          <IconButton component={Link} to={`/sets/${setId}`} color="inherit">
-            <ArrowBack />
-          </IconButton>
+          <BackButton />
           <Typography variant="subheading" color="inherit">
             New Flashcard
           </Typography>

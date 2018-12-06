@@ -1,5 +1,3 @@
-import TextField from "@material-ui/core/TextField";
-
 // @flow
 import * as React from "react";
 import { Link, Redirect, withRouter } from "react-router-dom";
@@ -11,11 +9,12 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
-import ArrowBack from "@material-ui/icons/ArrowBack";
+import TextField from "@material-ui/core/TextField";
 import AddIcon from "@material-ui/icons/Add";
 import ModeEditIcon from "@material-ui/icons/ModeEdit";
 import DeleteIcon from "@material-ui/icons/Delete";
 
+import BackButton from "../../components/BackButton";
 import { deleteFlashcard, updateSetTitle } from "../../modules/flashcards";
 import { Flashcard } from "../../types";
 import Header from "../../components/Header";
@@ -174,14 +173,7 @@ class Set extends React.Component<Props, State> {
           onDeleteSuccess={this.handleFlashcardDeleteSuccess}
         />
         <Header>
-          <IconButton
-            className="menuIconLeft"
-            component={Link}
-            to="/"
-            color="inherit"
-          >
-            <ArrowBack />
-          </IconButton>
+          <BackButton className="menuIconLeft" />
           <Typography
             variant="headline"
             color="inherit"
@@ -229,7 +221,7 @@ class Set extends React.Component<Props, State> {
           </Typography>
         </div>
         <Divider />
-        <div className="textsContainer">
+        <div className="textsContainer" id="scrollingElement">
           {hasFlashcards ? (
             <List disablePadding>
               {flashcards.map(({ title }, index) => {
