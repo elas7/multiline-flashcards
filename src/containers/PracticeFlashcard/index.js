@@ -33,6 +33,14 @@ class PracticeFlashcard extends React.Component<Props, State> {
     firstDifferentWord: null
   };
 
+  componentDidMount() {
+    window.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keydown", this.handleKeyDown);
+  }
+
   isValid = () => {
     const { text, checked } = this.state;
 
@@ -45,6 +53,20 @@ class PracticeFlashcard extends React.Component<Props, State> {
     this.setState({
       [fieldName]: value
     });
+  };
+
+  handleKeyDown = event => {
+    const { checked } = this.state;
+
+    // Submit if SHIFT + ENTER is pressed
+    if (!checked && event.shiftKey && event.key === "Enter") {
+      this.handleCheck();
+    }
+
+    // Practice again if ENTER is pressed
+    if (checked && event.key === "Enter") {
+      this.handleAgain();
+    }
   };
 
   handleCheck = () => {
@@ -139,6 +161,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
                 spellCheck="false"
                 rows={3}
                 rowsMax={10}
+                autoFocus
                 InputLabelProps={{
                   shrink: true
                 }}
@@ -148,7 +171,11 @@ class PracticeFlashcard extends React.Component<Props, State> {
             )}
           </div>
           {checked ? (
-            <Button variant="raised" color="primary" onClick={this.handleAgain}>
+            <Button
+              variant="raised"
+              color="primary"
+              onClick={this.handleAgain}
+            >
               Practice Again
             </Button>
           ) : (
