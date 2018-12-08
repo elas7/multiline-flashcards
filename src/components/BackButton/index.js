@@ -24,7 +24,7 @@ class BackButton extends React.Component<Props> {
 
   handleKeyUp = event => {
     // "Click" if ALT + ArrowLeft is pressed
-    if (event.altKey && event.key === "ArrowLeft") {
+    if (event.shiftKey && event.key === "ArrowLeft") {
       this.props.history.goBack();
     }
   };
