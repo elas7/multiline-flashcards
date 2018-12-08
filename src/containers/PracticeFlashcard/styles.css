@@ -13,7 +13,6 @@
 
 .practiceTextCorrection {
   white-space: pre-wrap;
-  margin-top: 1rem !important;
 }
 
 .errorText {
@@ -33,3 +32,10 @@
 .practiceNotificationIncorrect {
   background: #d32f2f !important;
 }
+
+.practiceTextSectionTitle {
+  font-size: 0.9rem !important;
+  margin-top: 1rem !important;
+  text-transform: uppercase;
+}
+

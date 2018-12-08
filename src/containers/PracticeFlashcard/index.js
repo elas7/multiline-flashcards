@@ -101,15 +101,35 @@ class PracticeFlashcard extends React.Component<Props, State> {
               {this.props.flashcard.title}
             </Typography>
             {checked && firstDifferentWord ? (
-              <Typography
-                variant="subheading"
-                color="default"
-                className="practiceTextCorrection"
-              >
-                {text.slice(0, firstDifferentWord.left)}
-                <span className="errorText">{firstDifferentWord.word}</span>
-                {text.slice(firstDifferentWord.right)}
-              </Typography>
+              <React.Fragment>
+                <Typography
+                  variant="subheading"
+                  color="textSecondary"
+                  className="practiceTextSectionTitle"
+                >
+                  Your answer
+                </Typography>
+                <Typography
+                  variant="subheading"
+                  color="default"
+                  className="practiceTextCorrection"
+                  gutterBottom
+                >
+                  {text.slice(0, firstDifferentWord.left)}
+                  <span className="errorText">{firstDifferentWord.word}</span>
+                  {text.slice(firstDifferentWord.right)}
+                </Typography>
+                <Typography
+                  variant="subheading"
+                  color="textSecondary"
+                  className="practiceTextSectionTitle"
+                >
+                  Correct answer
+                </Typography>
+                <Typography variant="subheading" color="inherit">
+                  {this.props.flashcard.text}
+                </Typography>
+              </React.Fragment>
             ) : (
               <TextField
                 placeholder="Type the text here"
