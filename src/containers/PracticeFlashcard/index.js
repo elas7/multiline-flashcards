@@ -41,6 +41,24 @@ class PracticeFlashcard extends React.Component<Props, State> {
     window.removeEventListener("keyup", this.handleKeyUp);
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (!this.state.checked && prevState.checked) {
+      console.log("focusing");
+      this.focusTextInput();
+    }
+  }
+
+  textInput = null;
+
+  setTextInputRef = element => {
+    this.textInput = element;
+  };
+
+  focusTextInput = () => {
+    // Focus the text input using the raw DOM API
+    if (this.textInput) this.textInput.focus();
+  };
+
   isValid = () => {
     const { text, checked } = this.state;
 
@@ -148,7 +166,11 @@ class PracticeFlashcard extends React.Component<Props, State> {
                 >
                   Correct answer
                 </Typography>
-                <Typography variant="subheading" color="inherit">
+                <Typography
+                  variant="subheading"
+                  color="inherit"
+                  className="practiceTextCorrection"
+                >
                   {this.props.flashcard.text}
                 </Typography>
               </React.Fragment>
@@ -156,6 +178,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
               <TextField
                 placeholder="Type the text here"
                 onChange={event => this.handleChange("text", event)}
+                inputRef={this.setTextInputRef}
                 disabled={checked}
                 value={text}
                 spellCheck="false"
@@ -171,11 +194,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
             )}
           </div>
           {checked ? (
-            <Button
-              variant="raised"
-              color="primary"
-              onClick={this.handleAgain}
-            >
+            <Button variant="raised" color="primary" onClick={this.handleAgain}>
               Practice Again
             </Button>
           ) : (
