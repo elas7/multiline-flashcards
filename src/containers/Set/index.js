@@ -56,6 +56,21 @@ class Set extends React.Component<Props, State> {
     title: this.props.set.title
   };
 
+  componentDidMount() {
+    window.addEventListener("keyup", this.handleKeyUp);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.handleKeyUp);
+  }
+
+  handleKeyUp = event => {
+    // "Click" random when "r" is pressed
+    if (event.key === "r") {
+      this.handleRandomClick();
+    }
+  };
+
   handleDeleteSetClick = () => {
     const {
       match: {
@@ -121,6 +136,10 @@ class Set extends React.Component<Props, State> {
         params: { setId }
       }
     } = this.props;
+
+    if (flashcards.length <= 1) {
+      return;
+    }
 
     const randomFlashcardIndex = getRandomIntInclusive(
       0,
@@ -244,7 +263,7 @@ class Set extends React.Component<Props, State> {
           {hasFlashcards && (
             <div className="setButtonContainer">
               <Button
-                disabled={flashcards.length === 1}
+                disabled={flashcards.length <= 1}
                 variant="contained"
                 color="secondary"
                 size="small"

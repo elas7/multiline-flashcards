@@ -14,6 +14,23 @@ class BackButton extends React.Component<Props> {
     className: ""
   };
 
+  componentDidMount() {
+    window.addEventListener("keyup", this.handleKeyUp);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("keyup", this.handleKeyUp);
+  }
+
+  handleKeyUp = event => {
+    // "Click" if ALT + ArrowLeft is pressed
+    if (event.altKey && event.key === "ArrowLeft") {
+      this.props.history.goBack();
+    }
+  };
+
+  handleClick = () => this.props.history.goBack();
+
   render() {
     const { className } = this.props;
 
@@ -21,7 +38,7 @@ class BackButton extends React.Component<Props> {
       <IconButton
         className={className}
         color="inherit"
-        onClick={() => this.props.history.goBack()}
+        onClick={this.handleClick}
       >
         <ArrowBack />
       </IconButton>
