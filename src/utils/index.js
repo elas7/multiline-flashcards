@@ -64,3 +64,12 @@ export const maybePluralize = (
   noun: string,
   suffix: string = "s"
 ) => `${count} ${noun}${count !== 1 ? suffix : ""}`;
+
+/**
+ * Reutrns a random integer between two values, inclusive
+ */
+export const getRandomIntInclusive = (min: number, max: number) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};

@@ -13,13 +13,14 @@ import TextField from "@material-ui/core/TextField";
 import AddIcon from "@material-ui/icons/Add";
 import ModeEditIcon from "@material-ui/icons/ModeEdit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { Dice5 } from "mdi-material-ui";
 
 import BackButton from "../../components/BackButton";
 import { deleteFlashcard, updateSetTitle } from "../../modules/flashcards";
 import { Flashcard } from "../../types";
 import Header from "../../components/Header";
 import EmptyMessage from "../../components/EmptyMessage";
-import { maybePluralize } from "../../utils";
+import { maybePluralize, getRandomIntInclusive } from "../../utils";
 import DeleteSetModal from "./DeleteSetModal";
 import DeleteFlashcardModal from "./DeleteFlashcardModal";
 import "./styles.css";
@@ -110,6 +111,27 @@ class Set extends React.Component<Props, State> {
     this.setState({
       title: value
     });
+  };
+
+  handleRandomClick = () => {
+    const {
+      history,
+      set: { flashcards },
+      match: {
+        params: { setId }
+      }
+    } = this.props;
+
+    const randomFlashcardIndex = getRandomIntInclusive(
+      0,
+      flashcards.length - 1
+    );
+
+    console.log("randomFlashcardIndex", randomFlashcardIndex);
+
+    history.push(
+      `/sets/${setId}/flashcards/${randomFlashcardIndex + 1}/practice`
+    );
   };
 
   handleTitleSubmit = event => {
@@ -219,6 +241,20 @@ class Set extends React.Component<Props, State> {
           <Typography variant="subheading" color="textSecondary">
             {maybePluralize(flashcards.length, "flashcard")}
           </Typography>
+          {hasFlashcards && (
+            <div className="setButtonContainer">
+              <Button
+                disabled={flashcards.length === 1}
+                variant="contained"
+                color="secondary"
+                size="small"
+                onClick={this.handleRandomClick}
+              >
+                Random
+                <Dice5 className="iconRight" />
+              </Button>
+            </div>
+          )}
         </div>
         <Divider />
         <div className="textsContainer" id="scrollingElement">

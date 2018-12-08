@@ -44,3 +44,13 @@
   position: relative !important;
   top: 0.2rem;
 }
+
+.iconRight {
+  margin-left: 0.4rem;
+}
+
+.setButtonContainer {
+  margin-top: 0.8rem;
+  display: flex;
+  justify-content: flex-end;
+}
