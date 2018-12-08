@@ -34,11 +34,11 @@ class PracticeFlashcard extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    window.addEventListener("keydown", this.handleKeyDown);
+    window.addEventListener("keyup", this.handleKeyUp);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keydown", this.handleKeyDown);
+    window.removeEventListener("keyup", this.handleKeyUp);
   }
 
   isValid = () => {
@@ -55,7 +55,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
     });
   };
 
-  handleKeyDown = event => {
+  handleKeyUp = event => {
     const { checked } = this.state;
 
     // Submit if SHIFT + ENTER is pressed
