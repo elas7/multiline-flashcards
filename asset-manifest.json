@@ -1,7 +1,14 @@
 {
-  "main.css": "static/css/main.7a896856.css",
-  "main.css.map": "static/css/main.7a896856.css.map",
-  "main.js": "static/js/main.da22ef89.js",
-  "main.js.map": "static/js/main.da22ef89.js.map",
-  "static/media/bg.jpeg": "static/media/bg.d1febb70.jpeg"
+  "main.css": "/multiline-flashcards/static/css/main.f5c476f0.chunk.css",
+  "main.js": "/multiline-flashcards/static/js/main.4bc1e7a1.chunk.js",
+  "main.js.map": "/multiline-flashcards/static/js/main.4bc1e7a1.chunk.js.map",
+  "static/js/1.785b14bd.chunk.js": "/multiline-flashcards/static/js/1.785b14bd.chunk.js",
+  "static/js/1.785b14bd.chunk.js.map": "/multiline-flashcards/static/js/1.785b14bd.chunk.js.map",
+  "runtime~main.js": "/multiline-flashcards/static/js/runtime~main.5e8e95b8.js",
+  "runtime~main.js.map": "/multiline-flashcards/static/js/runtime~main.5e8e95b8.js.map",
+  "static/media/styles.css": "/multiline-flashcards/static/media/bg.d1febb70.jpeg",
+  "static/css/main.f5c476f0.chunk.css.map": "/multiline-flashcards/static/css/main.f5c476f0.chunk.css.map",
+  "index.html": "/multiline-flashcards/index.html",
+  "precache-manifest.d84a3b5c68a80128ad7501f180a28176.js": "/multiline-flashcards/precache-manifest.d84a3b5c68a80128ad7501f180a28176.js",
+  "service-worker.js": "/multiline-flashcards/service-worker.js"
 }
