@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 import ScrollMemory from "react-router-scroll-memory";
+import { LastLocationProvider } from "react-router-last-location";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
@@ -16,7 +17,9 @@ ReactDOM.render(
       <Router basename="/multiline-flashcards">
         <React.Fragment>
           <ScrollMemory elementID="scrollingElement" />
-          <App />
+          <LastLocationProvider>
+            <App />
+          </LastLocationProvider>
         </React.Fragment>
       </Router>
     </PersistGate>

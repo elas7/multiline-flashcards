@@ -43,7 +43,6 @@ class PracticeFlashcard extends React.Component<Props, State> {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!this.state.checked && prevState.checked) {
-      console.log("focusing");
       this.focusTextInput();
     }
   }
@@ -124,13 +123,13 @@ class PracticeFlashcard extends React.Component<Props, State> {
     const { text, checked, correct, firstDifferentWord } = this.state;
 
     if (!this.props.flashcard) {
-      return <Redirect push to="/" />;
+      return <Redirect to="/" />;
     }
 
     return (
       <React.Fragment>
         <Header color="default">
-          <BackButton />
+          <BackButton parentURL={`/sets/${setId}`} />
           <Typography variant="subheading" color="inherit">
             Practice
           </Typography>

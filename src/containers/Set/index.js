@@ -146,8 +146,6 @@ class Set extends React.Component<Props, State> {
       flashcards.length - 1
     );
 
-    console.log("randomFlashcardIndex", randomFlashcardIndex);
-
     history.push(
       `/sets/${setId}/flashcards/${randomFlashcardIndex + 1}/practice`
     );
@@ -190,8 +188,6 @@ class Set extends React.Component<Props, State> {
       editingTitle,
       title
     } = this.state;
-
-    console.log("set", set);
 
     if (!set) {
       return <Redirect push to="/" />;

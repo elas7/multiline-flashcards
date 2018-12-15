@@ -1,18 +1,20 @@
 // @flow
 import * as React from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import BackButton from "../../components/BackButton";
+import GoBack from "../../components/GoBack";
 import { createFlashcard } from "../../modules/flashcards";
 import Header from "../../components/Header";
 import "./styles.css";
 
 type Props = {
-  createFlashcard: Function
+  createFlashcard: Function,
+  history: Object,
+  lastLocation: Object | null
 };
 
 type State = {
@@ -70,13 +72,13 @@ class NewFlashcard extends React.Component<Props, State> {
     const { title, text, saved } = this.state;
 
     if (saved) {
-      return <Redirect push to={`/sets/${setId}`} />;
+      return <GoBack parentURL={`/sets/${setId}`} />;
     }
 
     return (
       <React.Fragment>
         <Header color="default">
-          <BackButton />
+          <BackButton parentURL={`/sets/${setId}`} />
           <Typography variant="subheading" color="inherit">
             New Flashcard
           </Typography>

@@ -1,12 +1,12 @@
 // @flow
 import * as React from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import BackButton from "../../components/BackButton";
+import GoBack from '../../components/GoBack';
 import { updateFlashcard } from "../../modules/flashcards";
 import { Flashcard } from "../../types";
 import Header from "../../components/Header";
@@ -74,7 +74,7 @@ class EditFlashcard extends React.Component<Props, State> {
     const { title, text, saved } = this.state;
 
     if (saved || !this.props.flashcard) {
-      return <Redirect push to={`/sets/${setId}`} />;
+      return <GoBack to={`/sets/${setId}`} />;
     }
 
     return (

@@ -1,17 +1,23 @@
 // @flow
 import * as React from "react";
 import { withRouter } from "react-router";
+import { withLastLocation } from "react-router-last-location";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 
+import { goBack } from "../../utils";
+
 type Props = {
   className: string,
-  history: Object
+  parentURL: string,
+  history: Object,
+  lastLocation: Object | null
 };
 
 class BackButton extends React.Component<Props> {
   static defaultProps = {
-    className: ""
+    className: "",
+    parentURL: "/"
   };
 
   componentDidMount() {
@@ -22,14 +28,20 @@ class BackButton extends React.Component<Props> {
     window.removeEventListener("keyup", this.handleKeyUp);
   }
 
+  goBack = () => {
+    const { history, lastLocation, parentURL } = this.props;
+
+    goBack(history, lastLocation, parentURL);
+  };
+
   handleKeyUp = event => {
     // "Click" if ALT + ArrowLeft is pressed
     if (event.shiftKey && event.key === "ArrowLeft") {
-      this.props.history.goBack();
+      this.goBack();
     }
   };
 
-  handleClick = () => this.props.history.goBack();
+  handleClick = () => this.goBack();
 
   render() {
     const { className } = this.props;
@@ -46,4 +58,4 @@ class BackButton extends React.Component<Props> {
   }
 }
 
-export default withRouter(BackButton);
+export default withLastLocation(withRouter(BackButton));

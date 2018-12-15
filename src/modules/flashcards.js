@@ -115,8 +115,6 @@ export function createSet(title: string) {
 }
 
 export function deleteSet(index: number) {
-  console.log("deleteSet", index);
-
   return {
     type: DELETE_SET,
     payload: {

@@ -25,8 +25,6 @@ class DeleteSetModal extends React.Component<Props, State> {
   render() {
     const { id, setId, flashcard, onClose } = this.props;
 
-    console.log(id, setId, flashcard)
-
     return (
       <DeleteModal
         type="flashcard"
@@ -41,9 +39,10 @@ class DeleteSetModal extends React.Component<Props, State> {
 
 export default connect(
   (state, props) => ({
-    flashcard: props.id !== null
-      ? state.flashcards.sets[Number(props.setId) - 1].flashcards[props.id]
-      : null
+    flashcard:
+      props.id !== null
+        ? state.flashcards.sets[Number(props.setId) - 1].flashcards[props.id]
+        : null
   }),
   dispatch => ({
     deleteFlashcard: (index, setIndex) =>

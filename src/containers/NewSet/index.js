@@ -1,12 +1,12 @@
 // @flow
 import * as React from "react";
-import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import BackButton from "../../components/BackButton";
+import GoBack from "../../components/GoBack";
 import { createSet } from "../../modules/flashcards";
 import Header from "../../components/Header";
 import "./styles.css";
@@ -59,7 +59,7 @@ class NewSet extends React.Component<Props, State> {
     const { title, saved } = this.state;
 
     if (saved) {
-      return <Redirect push to="/" />;
+      return <GoBack to="/" />;
     }
 
     return (
