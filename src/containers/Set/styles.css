@@ -21,6 +21,7 @@
   position: absolute !important;
   bottom: 2rem;
   right: 2rem;
+  z-index: 5000;
 }
 
 .textsContainer {
@@ -39,6 +40,10 @@
   align-items: baseline;
 }
 
+.titleForm {
+  display: flex;
+}
+
 .editTitleButton {
   margin-left: 0.5rem !important;
   position: relative !important;
@@ -52,4 +57,34 @@
 .setButtonContainer {
   display: flex;
   justify-content: flex-end;
+}
+
+.listItem:not(:hover) {
+  background-color: white !important;
+}
+
+.isDragging .listItem:hover {
+  background-color: white !important;
+}
+
+.listItem:hover .dragHandle {
+  visibility: visible;
+}
+
+.isDragging .listItem:hover .dragHandle {
+  visibility: hidden;
+}
+
+.dragHandle {
+  visibility: hidden;
+}
+
+@media (max-width: 600px) {
+  .dragHandle {
+    visibility: visible;
+  }
+}
+
+.dragHandle.isDragging {
+  visibility: visible;
 }

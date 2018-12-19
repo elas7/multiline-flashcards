@@ -9,6 +9,7 @@ const UPDATE_SETS = "flashcards/UPDATE_SETS";
 const CREATE_FLASHCARD = "flashcards/CREATE_FLASHCARD";
 const DELETE_FLASHCARD = "flashcards/DELETE_FLASHCARD";
 const UPDATE_FLASHCARD = "flashcards/UPDATE_FLASHCARD";
+const MOVE_FLASHCARD = "flashcards/MOVE_FLASHCARD";
 
 type State = {
   sets: Set[]
@@ -100,6 +101,29 @@ export default function reducer(state: State = initialState, action: Object) {
           return set;
         })
       };
+    case MOVE_FLASHCARD:
+      return {
+        ...state,
+
+        sets: state.sets.map((set, index) => {
+          if (index === action.payload.setIndex) {
+            console.log(action.payload.flashcardIndex)
+
+            const flaschardToMove = set.flashcards[action.payload.flashcardIndex];
+            const newFlashcards = [...set.flashcards];
+
+            newFlashcards.splice(action.payload.flashcardIndex, 1);
+            newFlashcards.splice(action.payload.destinationIndex, 0, flaschardToMove);
+
+            return {
+              ...set,
+              flashcards: newFlashcards
+            };
+          }
+
+          return set;
+        })
+      };
     default:
       return state;
   }
@@ -148,6 +172,21 @@ export function deleteFlashcard(flashcardIndex: number, setIndex: number) {
     type: DELETE_FLASHCARD,
     payload: {
       flashcardIndex,
+      setIndex
+    }
+  };
+}
+
+export function moveFlashcard(
+  flashcardIndex: number,
+  destinationIndex: number,
+  setIndex: number
+) {
+  return {
+    type: MOVE_FLASHCARD,
+    payload: {
+      flashcardIndex,
+      destinationIndex,
       setIndex
     }
   };

@@ -1,7 +1,10 @@
 // @flow
 import * as React from "react";
+import cx from "classnames";
 import { Link, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import RootRef from "@material-ui/core/RootRef";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
@@ -11,12 +14,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import TextField from "@material-ui/core/TextField";
 import AddIcon from "@material-ui/icons/Add";
-import ModeEditIcon from "@material-ui/icons/ModeEdit";
+import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
+import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import { Dice5 } from "mdi-material-ui";
 
 import BackButton from "../../components/BackButton";
-import { deleteFlashcard, updateSetTitle } from "../../modules/flashcards";
+import { moveFlashcard, updateSetTitle } from "../../modules/flashcards";
 import { Flashcard } from "../../types";
 import Header from "../../components/Header";
 import EmptyMessage from "../../components/EmptyMessage";
@@ -27,7 +31,7 @@ import "./styles.css";
 
 type Props = {
   flashcards: Flashcard[],
-  deleteFlashcard: Function,
+  moveFlashcard: Function,
   deleteSet: Function,
   history: Object,
   match: Object
@@ -40,6 +44,8 @@ type State = {
   deleteModalSetId: number | null,
   // true if the title set is being edited
   editingTitle: boolean,
+  // Used to prevent race between input blur and button click
+  editTitleMouseDown: boolean,
   // title being edited
   title: string
 };
@@ -53,6 +59,7 @@ class Set extends React.Component<Props, State> {
     deleteModalFlashcardId: null,
     deleteModalSetId: null,
     editingTitle: false,
+    editTitleMouseDown: false,
     title: this.props.set.title
   };
 
@@ -65,8 +72,10 @@ class Set extends React.Component<Props, State> {
   }
 
   handleKeyUp = event => {
+    const { editingTitle } = this.state;
+
     // "Click" random when "r" is pressed
-    if (event.key === "r") {
+    if (!editingTitle && event.key === "r") {
       this.handleRandomClick();
     }
   };
@@ -115,9 +124,23 @@ class Set extends React.Component<Props, State> {
   };
 
   handleEditTitleClick = () => {
-    this.setState(state => ({
-      editingTitle: !state.editingTitle
-    }));
+    const { editingTitle } = this.state;
+
+    if (!editingTitle) {
+      this.setState({
+        editingTitle: true
+      });
+    } else {
+      this.maybeSaveTitle();
+    }
+  };
+
+  handleEditTitleMouseDown = () => {
+    this.setState({ editTitleMouseDown: true });
+
+    setTimeout(() => {
+      this.setState({ editTitleMouseDown: false });
+    }, 100);
   };
 
   handleTitleChange = event => {
@@ -151,6 +174,16 @@ class Set extends React.Component<Props, State> {
     );
   };
 
+  handleTitleBlur = () => {
+    const { editTitleMouseDown } = this.state;
+
+    // Sometimes blur and edit-click can happen at the same time.
+    // If so, let edit-click handle the save
+    if (!editTitleMouseDown) {
+      this.maybeSaveTitle();
+    }
+  };
+
   handleTitleSubmit = event => {
     event.preventDefault();
     this.maybeSaveTitle();
@@ -173,6 +206,31 @@ class Set extends React.Component<Props, State> {
       title: title,
       editingTitle: false
     });
+  };
+
+  onDragEnd = result => {
+    const {
+      match: {
+        params: { setId }
+      }
+    } = this.props;
+    const { destination, source } = result;
+
+    // dropped outside the list
+    if (!destination) {
+      return;
+    }
+
+    // dropped to the same place
+    if (destination.index === source.index) {
+      return;
+    }
+
+    this.props.moveFlashcard(
+      source.index,
+      destination.index,
+      Number(setId) - 1
+    );
   };
 
   render() {
@@ -229,12 +287,12 @@ class Set extends React.Component<Props, State> {
         <div className="setInfo">
           <div className="titleContainer">
             {editingTitle ? (
-              <form onSubmit={this.handleTitleSubmit}>
+              <form className="titleForm" onSubmit={this.handleTitleSubmit}>
                 <TextField
                   autoFocus
                   label="Title"
                   onChange={this.handleTitleChange}
-                  onBlur={this.maybeSaveTitle}
+                  onBlur={this.handleTitleBlur}
                   value={title}
                   InputLabelProps={{
                     shrink: true
@@ -248,9 +306,10 @@ class Set extends React.Component<Props, State> {
             <IconButton
               color={editingTitle ? "primary" : "inherit"}
               onClick={this.handleEditTitleClick}
+              onMouseDown={this.handleEditTitleMouseDown}
               classes={{ root: "editTitleButton" }}
             >
-              <ModeEditIcon />
+              <EditIcon />
             </IconButton>
           </div>
           <Typography variant="subheading" color="textSecondary">
@@ -274,37 +333,76 @@ class Set extends React.Component<Props, State> {
         <Divider />
         <div className="textsContainer" id="scrollingElement">
           {hasFlashcards ? (
-            <List disablePadding>
-              {flashcards.map(({ title }, index) => {
-                return (
-                  <ListItem
-                    button
-                    key={index}
-                    onClick={() => this.handleFlashcardClick(index)}
-                  >
-                    <ListItemText primary={title} />
-                    <IconButton
-                      onClick={event => {
-                        event.stopPropagation();
-                      }}
-                      component={Link}
-                      to={`/sets/${setId}/flashcards/${index + 1}/edit`}
+            <DragDropContext onDragEnd={this.onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided, snapshot) => (
+                  <RootRef rootRef={provided.innerRef}>
+                    <List
+                      disablePadding
+                      className={cx({
+                        isDragging: snapshot.isDraggingOver
+                      })}
                     >
-                      <ModeEditIcon />
-                    </IconButton>
+                      {flashcards.map(({ title }, index) => {
+                        return (
+                          <Draggable
+                            key={index}
+                            draggableId={String(index)}
+                            index={index}
+                          >
+                            {(provided, snapshot) => (
+                              <RootRef rootRef={provided.innerRef}>
+                                <ListItem
+                                  {...provided.draggableProps}
+                                  classes={{ default: "listItem" }}
+                                  button
+                                  disableTouchRipple
+                                  disableRipple={true}
+                                  key={index}
+                                  onClick={() =>
+                                    this.handleFlashcardClick(index)
+                                  }
+                                >
+                                  <div
+                                    className={cx("dragHandle", {
+                                      isDragging: snapshot.isDragging
+                                    })}
+                                    {...provided.dragHandleProps}
+                                  >
+                                    <DragIndicatorIcon />
+                                  </div>
+                                  <ListItemText primary={title} />
+                                  <IconButton
+                                    onClick={event => {
+                                      event.stopPropagation();
+                                    }}
+                                    component={Link}
+                                    to={`/sets/${setId}/flashcards/${index +
+                                      1}/edit`}
+                                  >
+                                    <EditIcon />
+                                  </IconButton>
 
-                    <IconButton
-                      onClick={event => {
-                        event.stopPropagation();
-                        this.handleDeleteButtonClick(index);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItem>
-                );
-              })}
-            </List>
+                                  <IconButton
+                                    onClick={event => {
+                                      event.stopPropagation();
+                                      this.handleDeleteButtonClick(index);
+                                    }}
+                                  >
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </ListItem>
+                              </RootRef>
+                            )}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </List>
+                  </RootRef>
+                )}
+              </Droppable>
+            </DragDropContext>
           ) : (
             <EmptyMessage />
           )}
@@ -329,7 +427,8 @@ export default withRouter(
       set: state.flashcards.sets[Number(props.match.params.setId) - 1]
     }),
     dispatch => ({
-      deleteFlashcard: index => dispatch(deleteFlashcard(index)),
+      moveFlashcard: (index, destinationIndex, setIndex) =>
+        dispatch(moveFlashcard(index, destinationIndex, setIndex)),
       updateSetTitle: (index, title) => dispatch(updateSetTitle(index, title))
     })
   )(Set)
