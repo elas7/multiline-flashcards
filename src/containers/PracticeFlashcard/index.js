@@ -34,11 +34,11 @@ class PracticeFlashcard extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    window.addEventListener("keyup", this.handleKeyUp);
+    window.addEventListener("keydown", this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keyup", this.handleKeyUp);
+    window.removeEventListener("keydown", this.handleKeyDown);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -58,12 +58,6 @@ class PracticeFlashcard extends React.Component<Props, State> {
     if (this.textInput) this.textInput.focus();
   };
 
-  isValid = () => {
-    const { text, checked } = this.state;
-
-    return text.trim() && !checked;
-  };
-
   handleChange = (fieldName, event) => {
     const value = event.target.value;
 
@@ -72,34 +66,39 @@ class PracticeFlashcard extends React.Component<Props, State> {
     });
   };
 
-  handleKeyUp = event => {
+  handleKeyDown = event => {
     const { checked } = this.state;
 
     // Submit if SHIFT + ENTER is pressed
     if (!checked && event.shiftKey && event.key === "Enter") {
+      event.preventDefault();
       this.handleCheck();
     }
 
     // Practice again if ENTER is pressed
     if (checked && event.key === "Enter") {
+      event.preventDefault();
       this.handleAgain();
     }
   };
 
   handleCheck = () => {
-    const { text } = this.state;
+    const { text, checked } = this.state;
 
-    if (!this.isValid()) {
+    if (checked) {
       return;
     }
 
-    const correct = areStringsEqual(text, this.props.flashcard.text);
+    const trimmedText = text.trim();
+
+    const correct = areStringsEqual(trimmedText, this.props.flashcard.text);
     const firstDifferentWord = !correct
-      ? findFirstDifferentWord(text.trim(), this.props.flashcard.text)
+      ? findFirstDifferentWord(trimmedText, this.props.flashcard.text)
       : null;
 
     this.setState({
       checked: true,
+      text: trimmedText,
       correct,
       firstDifferentWord
     });
@@ -126,6 +125,8 @@ class PracticeFlashcard extends React.Component<Props, State> {
       return <Redirect to="/" />;
     }
 
+    console.log("checked", checked);
+
     return (
       <React.Fragment>
         <Header color="default">
@@ -139,25 +140,31 @@ class PracticeFlashcard extends React.Component<Props, State> {
             <Typography variant="title" color="inherit">
               {this.props.flashcard.title}
             </Typography>
-            {checked && firstDifferentWord ? (
+            {checked && !correct ? (
               <React.Fragment>
-                <Typography
-                  variant="subheading"
-                  color="textSecondary"
-                  className="practiceTextSectionTitle"
-                >
-                  Your answer
-                </Typography>
-                <Typography
-                  variant="subheading"
-                  color="default"
-                  className="practiceTextCorrection"
-                  gutterBottom
-                >
-                  {text.slice(0, firstDifferentWord.left)}
-                  <span className="errorText">{firstDifferentWord.word}</span>
-                  {text.slice(firstDifferentWord.right)}
-                </Typography>
+                {text && (
+                  <>
+                    <Typography
+                      variant="subheading"
+                      color="textSecondary"
+                      className="practiceTextSectionTitle"
+                    >
+                      Your answer
+                    </Typography>
+                    <Typography
+                      variant="subheading"
+                      color="default"
+                      className="practiceTextCorrection"
+                      gutterBottom
+                    >
+                      {text.slice(0, firstDifferentWord.left)}
+                      <span className="errorText">
+                        {firstDifferentWord.word}
+                      </span>
+                      {text.slice(firstDifferentWord.right)}
+                    </Typography>
+                  </>
+                )}
                 <Typography
                   variant="subheading"
                   color="textSecondary"
@@ -201,7 +208,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
               variant="raised"
               color="primary"
               onClick={this.handleCheck}
-              disabled={!this.isValid()}
+              disabled={checked}
             >
               Check
             </Button>
