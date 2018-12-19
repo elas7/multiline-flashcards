@@ -15,9 +15,12 @@
   white-space: pre-wrap;
 }
 
-.errorText {
+.diffDeleteText {
   color: #d32f2f;
-  font-weight: bold;
+}
+
+.diffAddText {
+  color: #43a047;
 }
 
 .practiceNotification {

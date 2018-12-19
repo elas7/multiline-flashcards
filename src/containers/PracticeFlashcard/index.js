@@ -1,16 +1,17 @@
 // @flow
 import * as React from "react";
-import { Link, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { DIFF_DELETE, DIFF_INSERT, DIFF_EQUAL } from "diff-match-patch";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Snackbar from "@material-ui/core/Snackbar";
 
-import { Flashcard, WordInString } from "../../types";
+import { Flashcard, DiffText } from "../../types";
 import Header from "../../components/Header";
 import BackButton from "../../components/BackButton";
-import { areStringsEqual, findFirstDifferentWord } from "../../utils";
+import { getDiffText } from "../../utils";
 import "./styles.css";
 
 type Props = {
@@ -22,7 +23,7 @@ type State = {
   text: string,
   checked: boolean,
   correct: ?boolean,
-  firstDifferentWord: ?WordInString
+  diffText: ?(DiffText[])
 };
 
 class PracticeFlashcard extends React.Component<Props, State> {
@@ -30,7 +31,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
     text: "",
     checked: false,
     correct: null,
-    firstDifferentWord: null
+    diffText: null
   };
 
   componentDidMount() {
@@ -91,16 +92,14 @@ class PracticeFlashcard extends React.Component<Props, State> {
 
     const trimmedText = text.trim();
 
-    const correct = areStringsEqual(trimmedText, this.props.flashcard.text);
-    const firstDifferentWord = !correct
-      ? findFirstDifferentWord(trimmedText, this.props.flashcard.text)
-      : null;
+    const diffText = getDiffText(this.props.flashcard.text, trimmedText);
+    const correct = diffText.length === 1 && diffText[0][0] === DIFF_EQUAL;
 
     this.setState({
       checked: true,
       text: trimmedText,
       correct,
-      firstDifferentWord
+      diffText
     });
   };
 
@@ -109,7 +108,28 @@ class PracticeFlashcard extends React.Component<Props, State> {
       text: "",
       checked: false,
       correct: null,
-      firstDifferentWord: null
+      diffText: null
+    });
+  };
+
+  renderDiffText = (diffText: DiffText[], type: "additions" | "deletions") => {
+    return diffText.map((diffText, index) => {
+      const diffType = diffText[0];
+      const value = diffText[1];
+      const expectedType = type === "additions" ? DIFF_INSERT : DIFF_DELETE;
+      const typeClass = type === "additions" ? "diffAddText" : "diffDeleteText";
+
+      if (diffType === DIFF_EQUAL) {
+        return value;
+      }
+
+      if (diffType === expectedType) {
+        return (
+          <span key={index} className={typeClass}>
+            {value}
+          </span>
+        );
+      }
     });
   };
 
@@ -119,13 +139,11 @@ class PracticeFlashcard extends React.Component<Props, State> {
         params: { setId }
       }
     } = this.props;
-    const { text, checked, correct, firstDifferentWord } = this.state;
+    const { text, checked, correct, diffText } = this.state;
 
     if (!this.props.flashcard) {
       return <Redirect to="/" />;
     }
-
-    console.log("checked", checked);
 
     return (
       <React.Fragment>
@@ -142,29 +160,6 @@ class PracticeFlashcard extends React.Component<Props, State> {
             </Typography>
             {checked && !correct ? (
               <React.Fragment>
-                {text && (
-                  <>
-                    <Typography
-                      variant="subheading"
-                      color="textSecondary"
-                      className="practiceTextSectionTitle"
-                    >
-                      Your answer
-                    </Typography>
-                    <Typography
-                      variant="subheading"
-                      color="default"
-                      className="practiceTextCorrection"
-                      gutterBottom
-                    >
-                      {text.slice(0, firstDifferentWord.left)}
-                      <span className="errorText">
-                        {firstDifferentWord.word}
-                      </span>
-                      {text.slice(firstDifferentWord.right)}
-                    </Typography>
-                  </>
-                )}
                 <Typography
                   variant="subheading"
                   color="textSecondary"
@@ -177,7 +172,23 @@ class PracticeFlashcard extends React.Component<Props, State> {
                   color="inherit"
                   className="practiceTextCorrection"
                 >
-                  {this.props.flashcard.text}
+                  {this.renderDiffText(diffText, "additions")}
+                </Typography>
+
+                <Typography
+                  variant="subheading"
+                  color="textSecondary"
+                  className="practiceTextSectionTitle"
+                >
+                  Your answer
+                </Typography>
+                <Typography
+                  variant="subheading"
+                  color="default"
+                  className="practiceTextCorrection"
+                  gutterBottom
+                >
+                  {this.renderDiffText(diffText, "deletions")}
                 </Typography>
               </React.Fragment>
             ) : (
@@ -229,8 +240,6 @@ class PracticeFlashcard extends React.Component<Props, State> {
             message={
               <span>
                 {correct ? "You are correct!" : "Oops, that's not correct"}
-                <br />
-                {firstDifferentWord && firstDifferentWord.word}
               </span>
             }
           />

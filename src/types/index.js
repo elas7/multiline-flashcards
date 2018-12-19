@@ -2,24 +2,14 @@
 
 export type Flashcard = {
   title: string,
-  text: string,
-}
+  text: string
+};
 
 export type Set = {
   title: string,
   flashcards: Flashcard[]
-}
+};
 
-/**
- * Represent a word within a string
- */
-export type WordInString = {
-  // the word text
-  text: string,
+export type DiffType = -1 | 0 | 1;
 
-  // left index within the string
-  left: number,
-
-  // right index within the string
-  right: number,
-}
+export type DiffText = [DiffType, string];
