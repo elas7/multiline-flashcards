@@ -3,6 +3,10 @@ import DiffMatchPatch from "diff-match-patch";
 
 import type { WordInString, DiffText } from "../types";
 
+const normalizeString = (string: string) => {
+  return string.toLowerCase().trim();
+};
+
 /**
  * Pluralize noun if appropriate
  */
