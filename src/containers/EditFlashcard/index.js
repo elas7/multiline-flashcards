@@ -80,7 +80,7 @@ class EditFlashcard extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <Header color="default">
-          <BackButton />
+          <BackButton parentURL={`/sets/${setId}`} />
           <Typography variant="subheading" color="inherit">
             Edit Flashcard
           </Typography>
