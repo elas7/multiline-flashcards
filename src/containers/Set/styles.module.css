@@ -59,16 +59,20 @@
   justify-content: flex-end;
 }
 
-.listItem:not(:hover) {
+.listItem.isDragging {
   background-color: white !important;
 }
 
-.isDragging .listItem:hover {
+.isDragging .listItem {
   background-color: white !important;
 }
 
 .listItem:hover .dragHandle {
   visibility: visible;
+}
+
+.isDragDisabled .listItem:hover .dragHandle {
+  visibility: hidden;
 }
 
 .isDragging .listItem:hover .dragHandle {

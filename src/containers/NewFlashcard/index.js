@@ -9,7 +9,7 @@ import BackButton from "../../components/BackButton";
 import GoBack from "../../components/GoBack";
 import { createFlashcard } from "../../modules/flashcards";
 import Header from "../../components/Header";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   createFlashcard: Function,
@@ -83,8 +83,8 @@ class NewFlashcard extends React.Component<Props, State> {
             New Flashcard
           </Typography>
         </Header>
-        <div className="newFlashcardContent">
-          <div className="newFlashcardForm">
+        <div className={styles.newFlashcardContent}>
+          <div className={styles.newFlashcardForm}>
             <TextField
               label="Title"
               placeholder="Add the title..."

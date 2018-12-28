@@ -10,15 +10,15 @@ import NewSet from "../NewSet";
 import NewFlashcard from "../NewFlashcard";
 import EditFlashcard from "../EditFlashcard";
 import PracticeFlashcard from "../PracticeFlashcard";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 class App extends React.Component<{}> {
   render() {
     return (
       <React.Fragment>
         <CssBaseline />
-        <div className="App">
-          <Paper className="wrapper" elevation={24}>
+        <div className={styles.app}>
+          <Paper className={styles.wrapper} elevation={24}>
             <Switch>
               <Route exact path="/" component={Home} />
               <Route exact path="/sets/new" component={NewSet} />

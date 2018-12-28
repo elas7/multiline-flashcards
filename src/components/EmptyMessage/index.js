@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import Avatar from "@material-ui/core/Avatar";
 import { Cards } from "mdi-material-ui";
 
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   text: string
@@ -19,13 +19,13 @@ class EmptyMessage extends React.Component<Props> {
     const { text } = this.props;
 
     return (
-      <div className="emptyMessage">
+      <div className={styles.emptyMessage}>
         <Avatar
           classes={{
-            root: "emptyMessageAvatar"
+            root: styles.emptyMessageAvatar
           }}
         >
-          <Cards className="emptyMessageIcon" />
+          <Cards className={styles.emptyMessageIcon} />
         </Avatar>
         <Typography align="center" color="textSecondary">
           You have no flashcards. Tap the Add Button to create a new set

@@ -14,7 +14,7 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { updateSets } from "../../../modules/flashcards";
 import { Set } from "../../../types";
 
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   sets: Set[],
@@ -73,7 +73,7 @@ class MainMenu extends React.Component<Props, State> {
     return (
       <React.Fragment>
         <IconButton
-          className="menuIcon"
+          className={styles.menuIcon}
           color="inherit"
           onClick={this.handleMenuClick}
         >

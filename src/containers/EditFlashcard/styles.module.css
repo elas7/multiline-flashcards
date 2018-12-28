@@ -10,3 +10,9 @@
   flex-direction: column;
   flex: 1;
 }
+
+.newFlashcardForm {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}

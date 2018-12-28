@@ -18,7 +18,7 @@ import EmptyMessage from "../../components/EmptyMessage";
 import { maybePluralize } from "../../utils";
 
 import MainMenu from "./MainMenu";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   sets: Set[],
@@ -56,16 +56,16 @@ class Home extends React.Component<Props, State> {
           <Typography
             variant="headline"
             color="inherit"
-            className="appBarTitle"
+            className={styles.appBarTitle}
           >
             Multiline Flashcards
           </Typography>
           <MainMenu />
         </Header>
-        <div className="textsContainer">
+        <div className={styles.textsContainer}>
           {hasSets ? (
             <React.Fragment>
-              <Typography variant="title" className="content">
+              <Typography variant="title" className={styles.content}>
                 Sets
               </Typography>
               <List disablePadding>
@@ -99,7 +99,7 @@ class Home extends React.Component<Props, State> {
             />
           )}
           <Button
-            className="addButton"
+            className={styles.addButton}
             component={Link}
             to="/sets/new"
             variant="fab"

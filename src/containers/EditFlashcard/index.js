@@ -6,11 +6,11 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 
 import BackButton from "../../components/BackButton";
-import GoBack from '../../components/GoBack';
+import GoBack from "../../components/GoBack";
 import { updateFlashcard } from "../../modules/flashcards";
 import { Flashcard } from "../../types";
 import Header from "../../components/Header";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   updateFlashcard: Function,
@@ -85,8 +85,8 @@ class EditFlashcard extends React.Component<Props, State> {
             Edit Flashcard
           </Typography>
         </Header>
-        <div className="newFlashcardContent">
-          <div className="newFlashcardForm">
+        <div className={styles.newFlashcardContent}>
+          <div className={styles.newFlashcardForm}>
             <TextField
               label="Title"
               placeholder="Add the title..."

@@ -4,7 +4,7 @@ import cx from "classnames";
 import MaterialUIModal from "@material-ui/core/Modal";
 import Paper from "@material-ui/core/Paper";
 
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   children: React.Node,
@@ -26,7 +26,7 @@ class Modal extends React.Component<Props> {
 
     return (
       <MaterialUIModal onClose={onClose} open={open} {...otherProps}>
-        <Paper className={cx("modal", className)}>{children}</Paper>
+        <Paper className={cx(styles.modal, className)}>{children}</Paper>
       </MaterialUIModal>
     );
   }

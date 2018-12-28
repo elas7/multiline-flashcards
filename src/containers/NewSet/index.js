@@ -9,7 +9,7 @@ import BackButton from "../../components/BackButton";
 import GoBack from "../../components/GoBack";
 import { createSet } from "../../modules/flashcards";
 import Header from "../../components/Header";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   createSet: Function
@@ -70,8 +70,8 @@ class NewSet extends React.Component<Props, State> {
             New Set
           </Typography>
         </Header>
-        <form className="newFlashcardContent" onSubmit={this.handleSave}>
-          <div className="newFlashcardForm">
+        <form className={styles.newFlashcardContent} onSubmit={this.handleSave}>
+          <div className={styles.newFlashcardForm}>
             <TextField
               label="Title"
               placeholder="Add the title..."

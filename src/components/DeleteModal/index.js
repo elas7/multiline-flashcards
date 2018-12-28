@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Modal from "../Modal";
 
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type ObjectType = "flashcard" | "set";
 
@@ -33,7 +33,7 @@ class DeleteModal extends React.Component<Props> {
           <Typography variant="subheading">
             Are you sure you want to delete the {type} {`"${title}"?`}
           </Typography>
-          <div className="modalButtonsContainer">
+          <div className={styles.modalButtonsContainer}>
             <Button onClick={onClose}>Cancel</Button>
             <Button variant="raised" color="primary" onClick={onDeleteConfirm}>
               Delete

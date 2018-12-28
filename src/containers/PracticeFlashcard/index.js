@@ -12,7 +12,7 @@ import { Flashcard, DiffText } from "../../types";
 import Header from "../../components/Header";
 import BackButton from "../../components/BackButton";
 import { getDiffText } from "../../utils";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   match: Object,
@@ -117,7 +117,7 @@ class PracticeFlashcard extends React.Component<Props, State> {
       const diffType = diffText[0];
       const value = diffText[1];
       const expectedType = type === "additions" ? DIFF_INSERT : DIFF_DELETE;
-      const typeClass = type === "additions" ? "diffAddText" : "diffDeleteText";
+      const typeClass = type === "additions" ? styles.diffAddText : styles.diffDeleteText;
 
       if (diffType === DIFF_EQUAL) {
         return value;
@@ -153,8 +153,8 @@ class PracticeFlashcard extends React.Component<Props, State> {
             Practice
           </Typography>
         </Header>
-        <div className="practiceContent">
-          <div className="practiceForm">
+        <div className={styles.practiceContent}>
+          <div className={styles.practiceForm}>
             <Typography variant="title" color="inherit">
               {this.props.flashcard.title}
             </Typography>
@@ -163,14 +163,14 @@ class PracticeFlashcard extends React.Component<Props, State> {
                 <Typography
                   variant="subheading"
                   color="textSecondary"
-                  className="practiceTextSectionTitle"
+                  className={styles.practiceTextSectionTitle}
                 >
                   Correct answer
                 </Typography>
                 <Typography
                   variant="subheading"
                   color="inherit"
-                  className="practiceTextCorrection"
+                  className={styles.practiceTextCorrection}
                 >
                   {this.renderDiffText(diffText, "additions")}
                 </Typography>
@@ -178,14 +178,14 @@ class PracticeFlashcard extends React.Component<Props, State> {
                 <Typography
                   variant="subheading"
                   color="textSecondary"
-                  className="practiceTextSectionTitle"
+                  className={styles.practiceTextSectionTitle}
                 >
                   Your answer
                 </Typography>
                 <Typography
                   variant="subheading"
                   color="default"
-                  className="practiceTextCorrection"
+                  className={styles.practiceTextCorrection}
                   gutterBottom
                 >
                   {this.renderDiffText(diffText, "deletions")}
@@ -230,11 +230,11 @@ class PracticeFlashcard extends React.Component<Props, State> {
               horizontal: "center"
             }}
             open={checked}
-            className="practiceNotification"
+            className={styles.practiceNotification}
             ContentProps={{
               className: correct
-                ? "practiceNotificationCorrect"
-                : "practiceNotificationIncorrect"
+                ? styles.practiceNotificationCorrect
+                : styles.practiceNotificationIncorrect
             }}
             transitionDuration={{ exit: 0 }}
             message={

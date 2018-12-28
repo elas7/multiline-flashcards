@@ -4,7 +4,7 @@ import cx from "classnames";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   children: React.Node,
@@ -23,11 +23,11 @@ class Header extends React.Component<Props> {
 
     return (
       <AppBar
-        className={cx("appBar", className)}
+        className={cx(styles.appBar, className)}
         position="sticky"
         color={color}
       >
-        <Toolbar className="smallToolbar">{children}</Toolbar>
+        <Toolbar className={styles.smallToolbar}>{children}</Toolbar>
       </AppBar>
     );
   }

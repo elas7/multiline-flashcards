@@ -27,7 +27,7 @@ import EmptyMessage from "../../components/EmptyMessage";
 import { maybePluralize, getRandomIntInclusive } from "../../utils";
 import DeleteSetModal from "./DeleteSetModal";
 import DeleteFlashcardModal from "./DeleteFlashcardModal";
-import "./styles.css";
+import styles from "./styles.module.css";
 
 type Props = {
   flashcards: Flashcard[],
@@ -253,6 +253,7 @@ class Set extends React.Component<Props, State> {
 
     const flashcards = set.flashcards;
     const hasFlashcards = flashcards.length !== 0;
+    const hasMoreThanOneFlashcard = flashcards.length > 1;
 
     return (
       <React.Fragment>
@@ -268,26 +269,29 @@ class Set extends React.Component<Props, State> {
           onDeleteSuccess={this.handleFlashcardDeleteSuccess}
         />
         <Header>
-          <BackButton className="menuIconLeft" />
+          <BackButton className={styles.menuIconLeft} />
           <Typography
             variant="headline"
             color="inherit"
-            className="appBarTitle"
+            className={styles.appBarTitle}
           >
             Set
           </Typography>
           <IconButton
-            className="menuIcon"
+            className={styles.menuIcon}
             color="inherit"
             onClick={this.handleDeleteSetClick}
           >
             <DeleteIcon />
           </IconButton>
         </Header>
-        <div className="setInfo">
-          <div className="titleContainer">
+        <div className={styles.setInfo}>
+          <div className={styles.titleContainer}>
             {editingTitle ? (
-              <form className="titleForm" onSubmit={this.handleTitleSubmit}>
+              <form
+                className={styles.titleForm}
+                onSubmit={this.handleTitleSubmit}
+              >
                 <TextField
                   autoFocus
                   label="Title"
@@ -307,7 +311,7 @@ class Set extends React.Component<Props, State> {
               color={editingTitle ? "primary" : "inherit"}
               onClick={this.handleEditTitleClick}
               onMouseDown={this.handleEditTitleMouseDown}
-              classes={{ root: "editTitleButton" }}
+              classes={{ root: styles.editTitleButton }}
             >
               <EditIcon />
             </IconButton>
@@ -316,22 +320,22 @@ class Set extends React.Component<Props, State> {
             {maybePluralize(flashcards.length, "flashcard")}
           </Typography>
           {hasFlashcards && (
-            <div className="setButtonContainer">
+            <div className={styles.setButtonContainer}>
               <Button
-                disabled={flashcards.length <= 1}
+                disabled={!hasMoreThanOneFlashcard}
                 variant="contained"
                 color="secondary"
                 size="small"
                 onClick={this.handleRandomClick}
               >
                 Random
-                <Dice5 className="iconRight" />
+                <Dice5 className={styles.iconRight} />
               </Button>
             </div>
           )}
         </div>
         <Divider />
-        <div className="textsContainer" id="scrollingElement">
+        <div className={styles.textsContainer} id="scrollingElement">
           {hasFlashcards ? (
             <DragDropContext onDragEnd={this.onDragEnd}>
               <Droppable droppableId="droppable">
@@ -340,7 +344,8 @@ class Set extends React.Component<Props, State> {
                     <List
                       disablePadding
                       className={cx({
-                        isDragging: snapshot.isDraggingOver
+                        [styles.isDragging]: snapshot.isDraggingOver,
+                        [styles.isDragDisabled]: !hasMoreThanOneFlashcard
                       })}
                     >
                       {flashcards.map(({ title }, index) => {
@@ -349,12 +354,17 @@ class Set extends React.Component<Props, State> {
                             key={index}
                             draggableId={String(index)}
                             index={index}
+                            isDragDisabled={!hasMoreThanOneFlashcard}
                           >
                             {(provided, snapshot) => (
                               <RootRef rootRef={provided.innerRef}>
                                 <ListItem
                                   {...provided.draggableProps}
-                                  classes={{ default: "listItem" }}
+                                  classes={{
+                                    default: cx(styles.listItem, {
+                                      [styles.isDragging]: snapshot.isDragging
+                                    })
+                                  }}
                                   button
                                   disableTouchRipple
                                   disableRipple={true}
@@ -364,8 +374,8 @@ class Set extends React.Component<Props, State> {
                                   }
                                 >
                                   <div
-                                    className={cx("dragHandle", {
-                                      isDragging: snapshot.isDragging
+                                    className={cx(styles.dragHandle, {
+                                      [styles.isDragging]: snapshot.isDragging
                                     })}
                                     {...provided.dragHandleProps}
                                   >
@@ -407,7 +417,7 @@ class Set extends React.Component<Props, State> {
             <EmptyMessage />
           )}
           <Button
-            className="addButton"
+            className={styles.addButton}
             component={Link}
             to={`/sets/${setId}/flashcards/new`}
             variant="fab"
