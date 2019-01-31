@@ -3,6 +3,7 @@ import * as React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
+import GithubCorner from "react-github-corner";
 
 import Home from "../Home";
 import Set from "../Set";
@@ -16,6 +17,10 @@ class App extends React.Component<{}> {
   render() {
     return (
       <React.Fragment>
+        <GithubCorner
+          href="https://github.com/elas7/multiline-flashcards"
+          svgStyle={{ mixBlendMode: "darken" }}
+        />
         <CssBaseline />
         <div className={styles.app}>
           <Paper className={styles.wrapper} elevation={24}>
