@@ -1,14 +1,14 @@
 {
-  "main.css": "/multiline-flashcards/static/css/main.7c25e538.chunk.css",
-  "main.js": "/multiline-flashcards/static/js/main.a533d39f.chunk.js",
-  "main.js.map": "/multiline-flashcards/static/js/main.a533d39f.chunk.js.map",
-  "static/js/1.10c5fcbd.chunk.js": "/multiline-flashcards/static/js/1.10c5fcbd.chunk.js",
-  "static/js/1.10c5fcbd.chunk.js.map": "/multiline-flashcards/static/js/1.10c5fcbd.chunk.js.map",
+  "main.css": "/multiline-flashcards/static/css/main.20b4296d.chunk.css",
+  "main.js": "/multiline-flashcards/static/js/main.a4280dba.chunk.js",
+  "main.js.map": "/multiline-flashcards/static/js/main.a4280dba.chunk.js.map",
+  "static/js/1.dead0139.chunk.js": "/multiline-flashcards/static/js/1.dead0139.chunk.js",
+  "static/js/1.dead0139.chunk.js.map": "/multiline-flashcards/static/js/1.dead0139.chunk.js.map",
   "runtime~main.js": "/multiline-flashcards/static/js/runtime~main.5e8e95b8.js",
   "runtime~main.js.map": "/multiline-flashcards/static/js/runtime~main.5e8e95b8.js.map",
-  "static/media/styles.css": "/multiline-flashcards/static/media/bg.d1febb70.jpeg",
-  "static/css/main.7c25e538.chunk.css.map": "/multiline-flashcards/static/css/main.7c25e538.chunk.css.map",
+  "static/media/styles.module.css": "/multiline-flashcards/static/media/bg.d1febb70.jpeg",
+  "static/css/main.20b4296d.chunk.css.map": "/multiline-flashcards/static/css/main.20b4296d.chunk.css.map",
   "index.html": "/multiline-flashcards/index.html",
-  "precache-manifest.8b58f1a1090dcd31b335a52c0aca15f5.js": "/multiline-flashcards/precache-manifest.8b58f1a1090dcd31b335a52c0aca15f5.js",
+  "precache-manifest.de60d52bc8b5474e729c44b4e84b4584.js": "/multiline-flashcards/precache-manifest.de60d52bc8b5474e729c44b4e84b4584.js",
   "service-worker.js": "/multiline-flashcards/service-worker.js"
 }
