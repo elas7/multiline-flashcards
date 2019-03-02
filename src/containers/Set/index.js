@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import RootRef from "@material-ui/core/RootRef";
 import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
@@ -416,15 +417,14 @@ class Set extends React.Component<Props, State> {
           ) : (
             <EmptyMessage />
           )}
-          <Button
+          <Fab
             className={styles.addButton}
             component={Link}
             to={`/sets/${setId}/flashcards/new`}
-            variant="fab"
             color="secondary"
           >
             <AddIcon />
-          </Button>
+          </Fab>
         </div>
       </React.Fragment>
     );

@@ -110,7 +110,7 @@ class NewFlashcard extends React.Component<Props, State> {
             />
           </div>
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             onClick={this.handleSave}
             disabled={!this.isValid()}

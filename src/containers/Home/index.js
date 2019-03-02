@@ -2,7 +2,7 @@
 import * as React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import Button from "@material-ui/core/Button";
+import Fab from "@material-ui/core/Fab";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -98,15 +98,14 @@ class Home extends React.Component<Props, State> {
               }
             />
           )}
-          <Button
+          <Fab
             className={styles.addButton}
             component={Link}
             to="/sets/new"
-            variant="fab"
             color="secondary"
           >
             <AddIcon />
-          </Button>
+          </Fab>
         </div>
       </React.Fragment>
     );

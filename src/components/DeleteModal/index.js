@@ -35,7 +35,7 @@ class DeleteModal extends React.Component<Props> {
           </Typography>
           <div className={styles.modalButtonsContainer}>
             <Button onClick={onClose}>Cancel</Button>
-            <Button variant="raised" color="primary" onClick={onDeleteConfirm}>
+            <Button variant="contained" color="primary" onClick={onDeleteConfirm}>
               Delete
             </Button>
           </div>

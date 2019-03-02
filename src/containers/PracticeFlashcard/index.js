@@ -211,12 +211,12 @@ class PracticeFlashcard extends React.Component<Props, State> {
             )}
           </div>
           {checked ? (
-            <Button variant="raised" color="primary" onClick={this.handleAgain}>
+            <Button variant="contained" color="primary" onClick={this.handleAgain}>
               Practice Again
             </Button>
           ) : (
             <Button
-              variant="raised"
+              variant="contained"
               color="primary"
               onClick={this.handleCheck}
               disabled={checked}
