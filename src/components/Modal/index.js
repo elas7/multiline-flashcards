@@ -15,21 +15,18 @@ type Props = {
   onClose: Function
 };
 
-class Modal extends React.Component<Props> {
-  static defaultProps = {
-    className: "",
-    open: true
-  };
+export default function Modal({
+  children,
+  className = "",
 
-  render() {
-    const { children, className, onClose, open, ...otherProps } = this.props;
-
-    return (
-      <MaterialUIModal onClose={onClose} open={open} {...otherProps}>
-        <Paper className={cx(styles.modal, className)}>{children}</Paper>
-      </MaterialUIModal>
-    );
-  }
+  // props used by material-ui's Modal component
+  open = true,
+  onClose,
+  ...otherProps
+}: Props) {
+  return (
+    <MaterialUIModal onClose={onClose} open={open} {...otherProps}>
+      <Paper className={cx(styles.modal, className)}>{children}</Paper>
+    </MaterialUIModal>
+  );
 }
-
-export default Modal;

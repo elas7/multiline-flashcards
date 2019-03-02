@@ -62,7 +62,7 @@ class Home extends React.Component<Props, State> {
           </Typography>
           <MainMenu />
         </Header>
-        <div className={styles.textsContainer}>
+        <div className={styles.textsContainer} id="scrollingElement">
           {hasSets ? (
             <React.Fragment>
               <Typography variant="title" className={styles.content}>

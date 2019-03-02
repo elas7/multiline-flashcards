@@ -1,5 +1,5 @@
 // @flow
-import * as React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withLastLocation } from "react-router-last-location";
 import IconButton from "@material-ui/core/IconButton";
@@ -14,48 +14,35 @@ type Props = {
   lastLocation: Object | null
 };
 
-class BackButton extends React.Component<Props> {
-  static defaultProps = {
-    className: "",
-    parentURL: "/"
-  };
-
-  componentDidMount() {
-    window.addEventListener("keyup", this.handleKeyUp);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.handleKeyUp);
-  }
-
-  goBack = () => {
-    const { history, lastLocation, parentURL } = this.props;
-
+function BackButton({
+  className = "",
+  parentURL = "/",
+  history,
+  lastLocation
+}: Props) {
+  const handleGoBack = () => {
     goBack(history, lastLocation, parentURL);
   };
 
-  handleKeyUp = event => {
-    // "Click" if ALT + ArrowLeft is pressed
-    if (event.shiftKey && event.key === "ArrowLeft") {
-      this.goBack();
-    }
-  };
+  useEffect(() => {
+    const handleKeyUp = event => {
+      // "Click" if ALT + ArrowLeft is pressed
+      if (event.shiftKey && event.key === "ArrowLeft") {
+        handleGoBack();
+      }
+    };
 
-  handleClick = () => this.goBack();
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
-  render() {
-    const { className } = this.props;
-
-    return (
-      <IconButton
-        className={className}
-        color="inherit"
-        onClick={this.handleClick}
-      >
-        <ArrowBack />
-      </IconButton>
-    );
-  }
+  return (
+    <IconButton className={className} color="inherit" onClick={handleGoBack}>
+      <ArrowBack />
+    </IconButton>
+  );
 }
 
 export default withLastLocation(withRouter(BackButton));

@@ -12,25 +12,18 @@ type Props = {
   color: string
 };
 
-class Header extends React.Component<Props> {
-  static defaultProps = {
-    className: "",
-    color: "primary"
-  };
-
-  render() {
-    const { children, className, color } = this.props;
-
-    return (
-      <AppBar
-        className={cx(styles.appBar, className)}
-        position="sticky"
-        color={color}
-      >
-        <Toolbar className={styles.smallToolbar}>{children}</Toolbar>
-      </AppBar>
-    );
-  }
+export default function Header({
+  className = "",
+  color = "primary",
+  children
+}: Props) {
+  return (
+    <AppBar
+      className={cx(styles.appBar, className)}
+      position="sticky"
+      color={color}
+    >
+      <Toolbar className={styles.smallToolbar}>{children}</Toolbar>
+    </AppBar>
+  );
 }
-
-export default Header;
