@@ -1,5 +1,5 @@
 // @flow
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withLastLocation } from "react-router-last-location";
 
@@ -18,6 +18,8 @@ function GoBack({ parentURL = "/", history, lastLocation }: Props) {
   useEffect(() => {
     goBack(history, lastLocation, parentURL);
   });
+
+  return null;
 }
 
 export default withLastLocation(withRouter(GoBack));

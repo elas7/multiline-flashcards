@@ -1,5 +1,5 @@
 // @flow
-import * as React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import yaml from "js-yaml";
 import FileSaver from "file-saver";
@@ -21,30 +21,18 @@ type Props = {
   updateSets: Function
 };
 
-type State = {
-  anchorEl: ?HTMLElement
-};
+function MainMenu({ updateSets, sets = [] }: Props) {
+  const [anchorEl, setAnchorEl] = useState(null);
 
-class MainMenu extends React.Component<Props, State> {
-  state = {
-    anchorEl: null
+  const handleMenuClick = event => {
+    setAnchorEl(event.currentTarget);
   };
 
-  static defaultProps = {
-    sets: []
+  const closeMenu = () => {
+    setAnchorEl(null);
   };
 
-  handleMenuClick = event => {
-    this.setState({ anchorEl: event.currentTarget });
-  };
-
-  closeMenu = () => {
-    this.setState({ anchorEl: null });
-  };
-
-  handleImport = files => {
-    const { updateSets } = this.props;
-
+  const handleImport = files => {
     const file = files[0];
     const reader = new FileReader();
     reader.onload = () => {
@@ -53,60 +41,54 @@ class MainMenu extends React.Component<Props, State> {
     };
     reader.readAsText(file);
 
-    this.closeMenu();
+    closeMenu();
   };
 
-  handleExport = () => {
-    const { sets } = this.props;
-
+  const handleExport = () => {
     const yamlString = yaml.safeDump({ sets });
     const blob = new Blob([yamlString], { type: "text/plain;charset=utf-8" });
     const fileName = `flashcards-${moment().format("Y-M-D")}.yaml`;
     FileSaver.saveAs(blob, fileName);
 
-    this.closeMenu();
+    closeMenu();
   };
 
-  render() {
-    const { anchorEl } = this.state;
-
-    return (
-      <React.Fragment>
-        <IconButton
-          className={styles.menuIcon}
-          color="inherit"
-          onClick={this.handleMenuClick}
+  return (
+    <React.Fragment>
+      <IconButton
+        className={styles.menuIcon}
+        color="inherit"
+        onClick={handleMenuClick}
+      >
+        <MoreVertIcon />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+      >
+        <UploadField
+          onFiles={handleImport}
+          uploadProps={{
+            accept: ".yaml"
+          }}
         >
-          <MoreVertIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          open={Boolean(anchorEl)}
-          onClose={this.closeMenu}
-        >
-          <UploadField
-            onFiles={this.handleImport}
-            uploadProps={{
-              accept: ".yaml"
-            }}
-          >
-            {hover => (
-              <MenuItem
-                classes={{
-                  root: hover ? "uploadFieldHover" : null
-                }}
-              >
-                Import Data
-              </MenuItem>
-            )}
-          </UploadField>
-          <MenuItem onClick={this.handleExport}>Export Data</MenuItem>
-        </Menu>
-      </React.Fragment>
-    );
-  }
+          {hover => (
+            <MenuItem
+              classes={{
+                root: hover ? styles.uploadFieldHover : null
+              }}
+            >
+              Import Data
+            </MenuItem>
+          )}
+        </UploadField>
+        <MenuItem onClick={handleExport}>Export Data</MenuItem>
+      </Menu>
+    </React.Fragment>
+  );
 }
 
 export default connect(

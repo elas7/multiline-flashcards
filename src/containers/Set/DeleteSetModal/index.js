@@ -13,27 +13,27 @@ type Props = {
   deleteSet: Function
 };
 
-class DeleteSetModal extends React.Component<Props, State> {
-  handleDeleteConfirm = () => {
-    const { id } = this.props;
-
-    this.props.deleteSet(Number(id) - 1);
-    this.props.onDeleteSuccess();
+function DeleteSetModal({
+  id,
+  onClose,
+  onDeleteSuccess,
+  set,
+  deleteSet
+}: Props) {
+  const handleDeleteConfirm = () => {
+    deleteSet(Number(id) - 1);
+    onDeleteSuccess();
   };
 
-  render() {
-    const { id, set, onClose } = this.props;
-
-    return (
-      <DeleteModal
-        type="set"
-        title={set ? set.title : null}
-        open={id !== null}
-        onClose={onClose}
-        onDeleteConfirm={this.handleDeleteConfirm}
-      />
-    );
-  }
+  return (
+    <DeleteModal
+      type="set"
+      title={set ? set.title : null}
+      open={id !== null}
+      onClose={onClose}
+      onDeleteConfirm={handleDeleteConfirm}
+    />
+  );
 }
 
 export default connect(

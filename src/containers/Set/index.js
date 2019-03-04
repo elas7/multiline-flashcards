@@ -1,5 +1,5 @@
 // @flow
-import * as React from "react";
+import React, { useState } from "react";
 import cx from "classnames";
 import { Link, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -21,8 +21,8 @@ import DragIndicatorIcon from "@material-ui/icons/DragIndicator";
 import { Dice5 } from "mdi-material-ui";
 
 import BackButton from "../../components/BackButton";
+import useKey from "../../hooks/useKey";
 import { moveFlashcard, updateSetTitle } from "../../modules/flashcards";
-import { Flashcard } from "../../types";
 import Header from "../../components/Header";
 import EmptyMessage from "../../components/EmptyMessage";
 import { maybePluralize, getRandomIntInclusive } from "../../utils";
@@ -31,7 +31,6 @@ import DeleteFlashcardModal from "./DeleteFlashcardModal";
 import styles from "./styles.module.css";
 
 type Props = {
-  flashcards: Flashcard[],
   moveFlashcard: Function,
   deleteSet: Function,
   history: Object,
@@ -51,116 +50,95 @@ type State = {
   title: string
 };
 
-class Set extends React.Component<Props, State> {
-  static defaultProps = {
-    flashcards: []
-  };
-
-  state = {
-    deleteModalFlashcardId: null,
-    deleteModalSetId: null,
-    editingTitle: false,
-    editTitleMouseDown: false,
-    title: this.props.set.title
-  };
-
-  componentDidMount() {
-    window.addEventListener("keyup", this.handleKeyUp);
+function Set({
+  set,
+  moveFlashcard,
+  updateSetTitle,
+  deleteSet,
+  history,
+  match: {
+    params: { setId }
+  }
+}: Props) {
+  if (!set) {
+    return <Redirect push to="/" />;
   }
 
-  componentWillUnmount() {
-    window.removeEventListener("keyup", this.handleKeyUp);
-  }
+  const { title: oldTitle, flashcards } = set;
 
-  handleKeyUp = event => {
-    const { editingTitle } = this.state;
+  // Id of Flashcard to show in Delete modal, if any
+  const [deleteModalFlashcardId, setDeleteModalFlashcardId] = useState(null);
+  // Id of Set to show in Delete modal, if any
+  const [deleteModalSetId, setDeleteModalSetId] = useState(null);
+  // true if the title set is being edited
+  const [editingTitle, setEditingTitle] = useState(false);
+  // Used to prevent race between input blur and button click
+  const [editTitleMouseDown, setEditTitleMouseDown] = useState(false);
+  // title being edited
+  const [title, setTitle] = useState(oldTitle);
 
-    // "Click" random when "r" is pressed
-    if (!editingTitle && event.key === "r") {
-      this.handleRandomClick();
-    }
-  };
-
-  handleDeleteSetClick = () => {
-    const {
-      match: {
-        params: { setId }
+  // "Click" random when "r" is pressed
+  useKey(
+    ["r"],
+    () => {
+      if (!editingTitle) {
+        handleRandomClick();
       }
-    } = this.props;
+    },
+    "keyup"
+  );
 
-    this.setState({ deleteModalSetId: setId });
+  const handleDeleteSetClick = () => {
+    setDeleteModalSetId(setId);
   };
 
-  handleDeleteButtonClick = flashcardIndex => {
-    this.setState({ deleteModalFlashcardId: flashcardIndex });
+  const handleDeleteButtonClick = flashcardIndex => {
+    setDeleteModalFlashcardId(flashcardIndex);
   };
 
-  handleDeleteSetModalClose = () => {
-    this.setState({ deleteModalSetId: null });
+  const handleDeleteSetModalClose = () => {
+    setDeleteModalSetId(null);
   };
 
-  handleDeleteFlashcardModalClose = () => {
-    this.setState({ deleteModalFlashcardId: null });
+  const handleDeleteFlashcardModalClose = () => {
+    setDeleteModalFlashcardId(null);
   };
 
-  handleSetDeleteSuccess = () => {
-    const { history } = this.props;
-
+  const handleSetDeleteSuccess = () => {
     history.push(`/`);
   };
 
-  handleFlashcardDeleteSuccess = () => {
-    this.setState({ deleteModalFlashcardId: null });
+  const handleFlashcardDeleteSuccess = () => {
+    setDeleteModalFlashcardId(null);
   };
 
-  handleFlashcardClick = index => {
-    const {
-      history,
-      match: {
-        params: { setId }
-      }
-    } = this.props;
-
+  const handleFlashcardClick = index => {
     history.push(`/sets/${setId}/flashcards/${index + 1}/practice`);
   };
 
-  handleEditTitleClick = () => {
-    const { editingTitle } = this.state;
-
+  const handleEditTitleClick = () => {
     if (!editingTitle) {
-      this.setState({
-        editingTitle: true
-      });
+      setEditingTitle(true);
     } else {
-      this.maybeSaveTitle();
+      maybeSaveTitle();
     }
   };
 
-  handleEditTitleMouseDown = () => {
-    this.setState({ editTitleMouseDown: true });
+  const handleEditTitleMouseDown = () => {
+    setEditTitleMouseDown(true);
 
     setTimeout(() => {
-      this.setState({ editTitleMouseDown: false });
+      setEditTitleMouseDown(false);
     }, 100);
   };
 
-  handleTitleChange = event => {
+  const handleTitleChange = event => {
     const value = event.target.value;
 
-    this.setState({
-      title: value
-    });
+    setTitle(value);
   };
 
-  handleRandomClick = () => {
-    const {
-      history,
-      set: { flashcards },
-      match: {
-        params: { setId }
-      }
-    } = this.props;
-
+  const handleRandomClick = () => {
     if (flashcards.length <= 1) {
       return;
     }
@@ -175,46 +153,29 @@ class Set extends React.Component<Props, State> {
     );
   };
 
-  handleTitleBlur = () => {
-    const { editTitleMouseDown } = this.state;
-
+  const handleTitleBlur = () => {
     // Sometimes blur and edit-click can happen at the same time.
     // If so, let edit-click handle the save
     if (!editTitleMouseDown) {
-      this.maybeSaveTitle();
+      maybeSaveTitle();
     }
   };
 
-  handleTitleSubmit = event => {
+  const handleTitleSubmit = event => {
     event.preventDefault();
-    this.maybeSaveTitle();
+    maybeSaveTitle();
   };
 
-  maybeSaveTitle = () => {
-    const { title } = this.state;
-    const {
-      match: {
-        params: { setId }
-      },
-      set: { title: oldTitle }
-    } = this.props;
-
+  const maybeSaveTitle = () => {
     if (title !== oldTitle && title.trim()) {
-      this.props.updateSetTitle(Number(setId) - 1, title);
+      updateSetTitle(Number(setId) - 1, title);
     }
 
-    this.setState({
-      title: title,
-      editingTitle: false
-    });
+    setTitle(title);
+    setEditingTitle(false);
   };
 
-  onDragEnd = result => {
-    const {
-      match: {
-        params: { setId }
-      }
-    } = this.props;
+  const onDragEnd = result => {
     const { destination, source } = result;
 
     // dropped outside the list
@@ -227,208 +188,179 @@ class Set extends React.Component<Props, State> {
       return;
     }
 
-    this.props.moveFlashcard(
-      source.index,
-      destination.index,
-      Number(setId) - 1
-    );
+    moveFlashcard(source.index, destination.index, Number(setId) - 1);
   };
 
-  render() {
-    const {
-      set,
-      match: {
-        params: { setId }
-      }
-    } = this.props;
-    const {
-      deleteModalFlashcardId,
-      deleteModalSetId,
-      editingTitle,
-      title
-    } = this.state;
+  const hasFlashcards = flashcards.length !== 0;
+  const hasMoreThanOneFlashcard = flashcards.length > 1;
 
-    if (!set) {
-      return <Redirect push to="/" />;
-    }
-
-    const flashcards = set.flashcards;
-    const hasFlashcards = flashcards.length !== 0;
-    const hasMoreThanOneFlashcard = flashcards.length > 1;
-
-    return (
-      <React.Fragment>
-        <DeleteSetModal
-          id={deleteModalSetId}
-          onClose={this.handleDeleteSetModalClose}
-          onDeleteSuccess={this.handleSetDeleteSuccess}
-        />
-        <DeleteFlashcardModal
-          id={deleteModalFlashcardId}
-          setId={setId}
-          onClose={this.handleDeleteFlashcardModalClose}
-          onDeleteSuccess={this.handleFlashcardDeleteSuccess}
-        />
-        <Header>
-          <BackButton className={styles.menuIconLeft} />
-          <Typography
-            variant="headline"
-            color="inherit"
-            className={styles.appBarTitle}
-          >
-            Set
-          </Typography>
-          <IconButton
-            className={styles.menuIcon}
-            color="inherit"
-            onClick={this.handleDeleteSetClick}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </Header>
-        <div className={styles.setInfo}>
-          <div className={styles.titleContainer}>
-            {editingTitle ? (
-              <form
-                className={styles.titleForm}
-                onSubmit={this.handleTitleSubmit}
-              >
-                <TextField
-                  autoFocus
-                  label="Title"
-                  onChange={this.handleTitleChange}
-                  onBlur={this.handleTitleBlur}
-                  value={title}
-                  InputLabelProps={{
-                    shrink: true
-                  }}
-                  margin="normal"
-                />
-              </form>
-            ) : (
-              <Typography variant="title">{set.title}</Typography>
-            )}
-            <IconButton
-              color={editingTitle ? "primary" : "inherit"}
-              onClick={this.handleEditTitleClick}
-              onMouseDown={this.handleEditTitleMouseDown}
-              classes={{ root: styles.editTitleButton }}
-            >
-              <EditIcon />
-            </IconButton>
-          </div>
-          <Typography variant="subheading" color="textSecondary">
-            {maybePluralize(flashcards.length, "flashcard")}
-          </Typography>
-          {hasFlashcards && (
-            <div className={styles.setButtonContainer}>
-              <Button
-                disabled={!hasMoreThanOneFlashcard}
-                variant="contained"
-                color="secondary"
-                size="small"
-                onClick={this.handleRandomClick}
-              >
-                Random
-                <Dice5 className={styles.iconRight} />
-              </Button>
-            </div>
-          )}
-        </div>
-        <Divider />
-        <div className={styles.textsContainer} id="scrollingElement">
-          {hasFlashcards ? (
-            <DragDropContext onDragEnd={this.onDragEnd}>
-              <Droppable droppableId="droppable">
-                {(provided, snapshot) => (
-                  <RootRef rootRef={provided.innerRef}>
-                    <List
-                      disablePadding
-                      className={cx({
-                        [styles.isDragging]: snapshot.isDraggingOver,
-                        [styles.isDragDisabled]: !hasMoreThanOneFlashcard
-                      })}
-                    >
-                      {flashcards.map(({ title }, index) => {
-                        return (
-                          <Draggable
-                            key={index}
-                            draggableId={String(index)}
-                            index={index}
-                            isDragDisabled={!hasMoreThanOneFlashcard}
-                          >
-                            {(provided, snapshot) => (
-                              <RootRef rootRef={provided.innerRef}>
-                                <ListItem
-                                  {...provided.draggableProps}
-                                  classes={{
-                                    default: cx(styles.listItem, {
-                                      [styles.isDragging]: snapshot.isDragging
-                                    })
-                                  }}
-                                  button
-                                  disableTouchRipple
-                                  disableRipple={true}
-                                  key={index}
-                                  onClick={() =>
-                                    this.handleFlashcardClick(index)
-                                  }
-                                >
-                                  <div
-                                    className={cx(styles.dragHandle, {
-                                      [styles.isDragging]: snapshot.isDragging
-                                    })}
-                                    {...provided.dragHandleProps}
-                                  >
-                                    <DragIndicatorIcon />
-                                  </div>
-                                  <ListItemText primary={title} />
-                                  <IconButton
-                                    onClick={event => {
-                                      event.stopPropagation();
-                                    }}
-                                    component={Link}
-                                    to={`/sets/${setId}/flashcards/${index +
-                                      1}/edit`}
-                                  >
-                                    <EditIcon />
-                                  </IconButton>
-
-                                  <IconButton
-                                    onClick={event => {
-                                      event.stopPropagation();
-                                      this.handleDeleteButtonClick(index);
-                                    }}
-                                  >
-                                    <DeleteIcon />
-                                  </IconButton>
-                                </ListItem>
-                              </RootRef>
-                            )}
-                          </Draggable>
-                        );
-                      })}
-                      {provided.placeholder}
-                    </List>
-                  </RootRef>
-                )}
-              </Droppable>
-            </DragDropContext>
+  return (
+    <React.Fragment>
+      <DeleteSetModal
+        id={deleteModalSetId}
+        onClose={handleDeleteSetModalClose}
+        onDeleteSuccess={handleSetDeleteSuccess}
+      />
+      <DeleteFlashcardModal
+        id={deleteModalFlashcardId}
+        setId={setId}
+        onClose={handleDeleteFlashcardModalClose}
+        onDeleteSuccess={handleFlashcardDeleteSuccess}
+      />
+      <Header>
+        <BackButton className={styles.menuIconLeft} />
+        <Typography
+          variant="headline"
+          color="inherit"
+          className={styles.appBarTitle}
+        >
+          Set
+        </Typography>
+        <IconButton
+          className={styles.menuIcon}
+          color="inherit"
+          onClick={handleDeleteSetClick}
+        >
+          <DeleteIcon />
+        </IconButton>
+      </Header>
+      <div className={styles.setInfo}>
+        <div className={styles.titleContainer}>
+          {editingTitle ? (
+            <form className={styles.titleForm} onSubmit={handleTitleSubmit}>
+              <TextField
+                autoFocus
+                label="Title"
+                onChange={handleTitleChange}
+                onBlur={handleTitleBlur}
+                value={title}
+                InputLabelProps={{
+                  shrink: true
+                }}
+                margin="normal"
+              />
+            </form>
           ) : (
-            <EmptyMessage />
+            <Typography variant="title">{set.title}</Typography>
           )}
-          <Fab
-            className={styles.addButton}
-            component={Link}
-            to={`/sets/${setId}/flashcards/new`}
-            color="secondary"
+          <IconButton
+            color={editingTitle ? "primary" : "inherit"}
+            onClick={handleEditTitleClick}
+            onMouseDown={handleEditTitleMouseDown}
+            classes={{ root: styles.editTitleButton }}
           >
-            <AddIcon />
-          </Fab>
+            <EditIcon />
+          </IconButton>
         </div>
-      </React.Fragment>
-    );
-  }
+        <Typography variant="subheading" color="textSecondary">
+          {maybePluralize(flashcards.length, "flashcard")}
+        </Typography>
+        {hasFlashcards && (
+          <div className={styles.setButtonContainer}>
+            <Button
+              disabled={!hasMoreThanOneFlashcard}
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={handleRandomClick}
+            >
+              Random
+              <Dice5 className={styles.iconRight} />
+            </Button>
+          </div>
+        )}
+      </div>
+      <Divider />
+      <div className={styles.textsContainer} id="scrollingElement">
+        {hasFlashcards ? (
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <RootRef rootRef={provided.innerRef}>
+                  <List
+                    disablePadding
+                    className={cx({
+                      [styles.isDragging]: snapshot.isDraggingOver,
+                      [styles.isDragDisabled]: !hasMoreThanOneFlashcard
+                    })}
+                  >
+                    {flashcards.map(({ title }, index) => {
+                      return (
+                        <Draggable
+                          key={index}
+                          draggableId={String(index)}
+                          index={index}
+                          isDragDisabled={!hasMoreThanOneFlashcard}
+                        >
+                          {(provided, snapshot) => (
+                            <RootRef rootRef={provided.innerRef}>
+                              <ListItem
+                                {...provided.draggableProps}
+                                classes={{
+                                  default: cx(styles.listItem, {
+                                    [styles.isDragging]: snapshot.isDragging
+                                  })
+                                }}
+                                button
+                                disableTouchRipple
+                                disableRipple={true}
+                                key={index}
+                                onClick={() => handleFlashcardClick(index)}
+                              >
+                                <div
+                                  className={cx(styles.dragHandle, {
+                                    [styles.isDragging]: snapshot.isDragging
+                                  })}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <DragIndicatorIcon />
+                                </div>
+                                <ListItemText primary={title} />
+                                <IconButton
+                                  onClick={event => {
+                                    event.stopPropagation();
+                                  }}
+                                  component={Link}
+                                  to={`/sets/${setId}/flashcards/${index +
+                                    1}/edit`}
+                                >
+                                  <EditIcon />
+                                </IconButton>
+
+                                <IconButton
+                                  onClick={event => {
+                                    event.stopPropagation();
+                                    handleDeleteButtonClick(index);
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </ListItem>
+                            </RootRef>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
+                  </List>
+                </RootRef>
+              )}
+            </Droppable>
+          </DragDropContext>
+        ) : (
+          <EmptyMessage />
+        )}
+        <Fab
+          className={styles.addButton}
+          component={Link}
+          to={`/sets/${setId}/flashcards/new`}
+          color="secondary"
+        >
+          <AddIcon />
+        </Fab>
+      </div>
+    </React.Fragment>
+  );
 }
 
 export default withRouter(

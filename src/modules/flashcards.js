@@ -107,8 +107,6 @@ export default function reducer(state: State = initialState, action: Object) {
 
         sets: state.sets.map((set, index) => {
           if (index === action.payload.setIndex) {
-            console.log(action.payload.flashcardIndex)
-
             const flaschardToMove = set.flashcards[action.payload.flashcardIndex];
             const newFlashcards = [...set.flashcards];
 

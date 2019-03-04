@@ -5,6 +5,7 @@ import { withLastLocation } from "react-router-last-location";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBack from "@material-ui/icons/ArrowBack";
 
+import useKey from "../../hooks/useKey";
 import { goBack } from "../../utils";
 
 type Props = {
@@ -24,19 +25,7 @@ function BackButton({
     goBack(history, lastLocation, parentURL);
   };
 
-  useEffect(() => {
-    const handleKeyUp = event => {
-      // "Click" if ALT + ArrowLeft is pressed
-      if (event.shiftKey && event.key === "ArrowLeft") {
-        handleGoBack();
-      }
-    };
-
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
+  useKey([["Shift", "ArrowLeft"]], handleGoBack);
 
   return (
     <IconButton className={className} color="inherit" onClick={handleGoBack}>

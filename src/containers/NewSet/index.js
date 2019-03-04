@@ -1,5 +1,5 @@
 // @flow
-import * as React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -7,94 +7,74 @@ import Button from "@material-ui/core/Button";
 
 import BackButton from "../../components/BackButton";
 import GoBack from "../../components/GoBack";
-import { createSet } from "../../modules/flashcards";
 import Header from "../../components/Header";
+import useForm from "../../hooks/useForm";
+import { createSet } from "../../modules/flashcards";
 import styles from "./styles.module.css";
 
 type Props = {
   createSet: Function
 };
 
-type State = {
-  title: string,
-  saved: boolean
-};
+function NewSet({ createSet }: Props) {
+  const [saved, setSaved] = useState(false);
 
-class NewSet extends React.Component<Props, State> {
-  state = {
-    title: "",
-    saved: false
-  };
-
-  isValid = () => {
-    const { title, saved } = this.state;
-
+  const validator = ({ title }) => {
     return title.trim() && !saved;
   };
 
-  handleTitleChange = event => {
-    const value = event.target.value;
+  const {
+    state: { title },
+    inputPropsFactories: { getTextProps },
+    isValid
+  } = useForm({ title: "" }, validator);
 
-    this.setState({
-      title: value
-    });
-  };
-
-  handleSave = event => {
-    const { title } = this.state;
-
+  const handleSave = event => {
     event.preventDefault();
 
-    if (!this.isValid()) {
+    if (!isValid) {
       return;
     }
 
-    this.props.createSet(title);
-    this.setState({
-      saved: true
-    });
+    createSet(title);
+    setSaved(true);
   };
 
-  render() {
-    const { title, saved } = this.state;
-
-    if (saved) {
-      return <GoBack to="/" />;
-    }
-
-    return (
-      <React.Fragment>
-        <Header color="default">
-          <BackButton />
-          <Typography variant="subheading" color="inherit">
-            New Set
-          </Typography>
-        </Header>
-        <form className={styles.newFlashcardContent} onSubmit={this.handleSave}>
-          <div className={styles.newFlashcardForm}>
-            <TextField
-              label="Title"
-              placeholder="Add the title..."
-              onChange={event => this.handleTitleChange(event)}
-              value={title}
-              InputLabelProps={{
-                shrink: true
-              }}
-              margin="normal"
-            />
-          </div>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={this.handleSave}
-            disabled={!this.isValid()}
-          >
-            Save
-          </Button>
-        </form>
-      </React.Fragment>
-    );
+  if (saved) {
+    return <GoBack parentURL="/" />;
   }
+
+  return (
+    <React.Fragment>
+      <Header color="default">
+        <BackButton />
+        <Typography variant="subheading" color="inherit">
+          New Set
+        </Typography>
+      </Header>
+      <form className={styles.newFlashcardContent} onSubmit={handleSave}>
+        <div className={styles.newFlashcardForm}>
+          <TextField
+            label="Title"
+            placeholder="Add the title..."
+            {...getTextProps("title")}
+            InputLabelProps={{
+              shrink: true
+            }}
+            margin="normal"
+          />
+        </div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSave}
+          disabled={!isValid}
+        >
+          Save
+        </Button>
+      </form>
+    </React.Fragment>
+  );
 }
 
 export default connect(

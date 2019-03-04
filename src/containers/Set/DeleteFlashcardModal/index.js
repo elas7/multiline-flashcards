@@ -14,27 +14,28 @@ type Props = {
   deleteFlashcard: Function
 };
 
-class DeleteSetModal extends React.Component<Props, State> {
-  handleDeleteConfirm = () => {
-    const { id, setId } = this.props;
-
-    this.props.deleteFlashcard(id, Number(setId) - 1);
-    this.props.onDeleteSuccess();
+function DeleteSetModal({
+  id,
+  setId,
+  onClose,
+  onDeleteSuccess,
+  flashcard,
+  deleteFlashcard
+}: Props) {
+  const handleDeleteConfirm = () => {
+    deleteFlashcard(id, Number(setId) - 1);
+    onDeleteSuccess();
   };
 
-  render() {
-    const { id, setId, flashcard, onClose } = this.props;
-
-    return (
-      <DeleteModal
-        type="flashcard"
-        title={flashcard ? flashcard.title : null}
-        open={id !== null}
-        onClose={onClose}
-        onDeleteConfirm={this.handleDeleteConfirm}
-      />
-    );
-  }
+  return (
+    <DeleteModal
+      type="flashcard"
+      title={flashcard ? flashcard.title : null}
+      open={id !== null}
+      onClose={onClose}
+      onDeleteConfirm={handleDeleteConfirm}
+    />
+  );
 }
 
 export default connect(

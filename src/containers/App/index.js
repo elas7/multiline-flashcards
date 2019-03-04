@@ -13,43 +13,39 @@ import EditFlashcard from "../EditFlashcard";
 import PracticeFlashcard from "../PracticeFlashcard";
 import styles from "./styles.module.css";
 
-class App extends React.Component<{}> {
-  render() {
-    return (
-      <React.Fragment>
-        <GithubCorner
-          href="https://github.com/elas7/multiline-flashcards"
-          svgStyle={{ mixBlendMode: "darken" }}
-        />
-        <CssBaseline />
-        <div className={styles.app}>
-          <Paper className={styles.wrapper} elevation={24}>
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route exact path="/sets/new" component={NewSet} />
-              <Route exact path="/sets/:setId" component={Set} />
-              <Route
-                exact
-                path="/sets/:setId/flashcards/new"
-                component={NewFlashcard}
-              />
-              <Route
-                exact
-                path="/sets/:setId/flashcards/:flashcardId/practice"
-                component={PracticeFlashcard}
-              />
-              <Route
-                exact
-                path="/sets/:setId/flashcards/:flashcardId/edit"
-                component={EditFlashcard}
-              />
-              <Redirect to="/" />
-            </Switch>
-          </Paper>
-        </div>
-      </React.Fragment>
-    );
-  }
+export default function App() {
+  return (
+    <React.Fragment>
+      <GithubCorner
+        href="https://github.com/elas7/multiline-flashcards"
+        svgStyle={{ mixBlendMode: "darken" }}
+      />
+      <CssBaseline />
+      <div className={styles.app}>
+        <Paper className={styles.wrapper} elevation={24}>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/sets/new" component={NewSet} />
+            <Route exact path="/sets/:setId" component={Set} />
+            <Route
+              exact
+              path="/sets/:setId/flashcards/new"
+              component={NewFlashcard}
+            />
+            <Route
+              exact
+              path="/sets/:setId/flashcards/:flashcardId/practice"
+              component={PracticeFlashcard}
+            />
+            <Route
+              exact
+              path="/sets/:setId/flashcards/:flashcardId/edit"
+              component={EditFlashcard}
+            />
+            <Redirect to="/" />
+          </Switch>
+        </Paper>
+      </div>
+    </React.Fragment>
+  );
 }
-
-export default App;
