@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/multiline-flashcards/static/css/main.c41114a2.chunk.css"
   },
   {
-    "revision": "157232125ea9dd6ffd3c46bb9cbf54ed",
+    "revision": "475b7c0ccafb3cefce8e6cbf79591dbf",
     "url": "/multiline-flashcards/index.html"
   }
 ];
